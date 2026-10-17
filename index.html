@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
+<meta name="referrer" content="no-referrer">
+<title>Secret Santa 2026</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎅</text></svg>">
+<style>
+  :root {
+    --bg: #0f1f17; --bg-glow: #23472f;
+    --card: #fffaf2; --ink: #2b1a12; --muted: #6b5b50; --line: #e3d6c6;
+    --red: #c8102e; --red-dark: #9b0c23; --gold: #e8b84a; --text: #f5efe6;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: radial-gradient(1200px 600px at 50% -10%, var(--bg-glow), var(--bg)) fixed, var(--bg);
+    color: var(--text); min-height: 100vh; overflow-x: hidden;
+  }
+  #snow { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  main { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 48px 16px 80px; }
+
+  header { text-align: center; }
+  h1, h2, .recipient { font-family: Georgia, "Times New Roman", serif; }
+  h1 {
+    font-size: clamp(2.4rem, 8vw, 4.4rem); margin: .1em 0; color: var(--gold);
+    text-shadow: 0 2px 0 #7a5a12, 0 8px 24px rgba(0,0,0,.4);
+  }
+  .sub { opacity: .85; font-size: 1.1rem; margin: 0; }
+  .countdown { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 24px; }
+  .countdown div {
+    background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15);
+    border-radius: 12px; padding: 10px 12px; min-width: 72px;
+  }
+  .countdown b { display: block; font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+  .countdown span { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; opacity: .7; }
+
+  section { margin-top: 64px; }
+  h2 { text-align: center; font-size: 1.9rem; margin: 0 0 20px; }
+
+  .card {
+    background: var(--card); color: var(--ink); border-radius: 20px; padding: 28px;
+    box-shadow: 0 20px 50px rgba(0,0,0,.35); max-width: 460px; margin: 0 auto;
+    border-top: 6px solid var(--red);
+  }
+  label { display: block; font-weight: 600; margin: 14px 0 6px; }
+  select, input {
+    width: 100%; font: inherit; padding: 12px 14px; border: 2px solid var(--line);
+    border-radius: 12px; background: #fff; color: var(--ink);
+  }
+  input { text-transform: uppercase; letter-spacing: .15em; font-family: ui-monospace, Consolas, monospace; }
+  select:focus, input:focus { outline: none; border-color: var(--gold); }
+  button {
+    margin-top: 20px; width: 100%; font: inherit; font-weight: 700; font-size: 1.05rem;
+    padding: 14px; border: 0; border-radius: 12px; background: var(--red); color: #fff; cursor: pointer;
+  }
+  button:hover { background: var(--red-dark); }
+  button:disabled { opacity: .6; cursor: wait; }
+  .error { color: var(--red); min-height: 1.4em; margin: 10px 0 0; font-weight: 600; }
+  .hint { font-size: .9rem; color: var(--muted); margin: 14px 0 0; }
+
+  .result { text-align: center; }
+  .result p { margin: 0; color: var(--muted); }
+  .recipient { font-size: 2.6rem; color: var(--red); margin: .15em 0 .1em; }
+  .result img {
+    width: 180px; height: 180px; object-fit: cover; border-radius: 50%;
+    border: 6px solid var(--gold); margin: 16px auto 4px; display: block;
+  }
+  .link { background: none; color: var(--muted); text-decoration: underline; width: auto; padding: 0; font-weight: 400; font-size: .9rem; }
+  .link:hover { background: none; color: var(--ink); }
+
+  .rules ul { max-width: 520px; margin: 0 auto; padding-left: 1.2em; line-height: 1.9; font-size: 1.05rem; }
+
+  .gallery { columns: 3 220px; column-gap: 16px; }
+  .gallery img {
+    width: 100%; margin: 0 0 16px; border-radius: 6px; display: block; break-inside: avoid;
+    cursor: zoom-in; background: #fff; padding: 8px 8px 28px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.4); transition: transform .2s;
+  }
+  .gallery img:nth-child(odd) { transform: rotate(-1.2deg); }
+  .gallery img:nth-child(even) { transform: rotate(1.2deg); }
+  .gallery img:hover { transform: scale(1.03) rotate(0); }
+  #lightbox {
+    position: fixed; inset: 0; background: rgba(0,0,0,.9); display: none;
+    align-items: center; justify-content: center; z-index: 10; cursor: zoom-out; padding: 16px;
+  }
+  #lightbox.open { display: flex; }
+  #lightbox img { max-width: 100%; max-height: 100%; border-radius: 8px; }
+
+  footer { text-align: center; margin-top: 72px; opacity: .6; font-size: .9rem; }
+
+  @keyframes pop { 0% { transform: scale(.7); opacity: 0; } 70% { transform: scale(1.05); } 100% { transform: scale(1); opacity: 1; } }
+  .pop { animation: pop .5s ease-out; }
+  @media (prefers-reduced-motion: reduce) { #snow { display: none; } .pop { animation: none; } }
+</style>
+</head>
+<body>
+<canvas id="snow"></canvas>
+<main>
+  <header>
+    <p class="sub">The family presents</p>
+    <h1>🎄 Secret Santa 2026 🎄</h1>
+    <p class="sub">Five of us. One gift each. Zero spoilers.</p>
+    <div class="countdown" id="countdown" aria-label="Countdown to Christmas Eve"></div>
+  </header>
+
+  <section>
+    <h2>Who are you buying for?</h2>
+    <div class="card">
+      <form id="reveal-form">
+        <label for="who">I am…</label>
+        <select id="who" required></select>
+        <label for="code">My secret code</label>
+        <input id="code" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX" required>
+        <button type="submit" id="reveal-btn">Reveal 🎁</button>
+        <p class="error" id="error" role="alert"></p>
+        <p class="hint">Check that nobody is looking over your shoulder! 👀</p>
+      </form>
+      <div class="result" id="result" hidden>
+        <p>Ho ho ho! You are Secret Santa for…</p>
+        <div class="recipient" id="recipient"></div>
+        <img id="recipient-photo" alt="" hidden>
+        <p>🤫 Keep it secret, keep it safe.</p>
+        <button type="button" class="link" id="hide-btn">Hide it again</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="rules">
+    <h2>The rules</h2>
+    <ul>
+      <li>💰 Budget: about <b>CHF 50</b></li>
+      <li>📅 Gifts are opened on <b>24 December</b></li>
+      <li>🤐 Never reveal who you have. Not even to the dog.</li>
+      <li>🎀 Wrapping counts. Effort is judged.</li>
+    </ul>
+  </section>
+
+  <section id="gallery-section" hidden>
+    <h2>Hall of fame</h2>
+    <div class="gallery" id="gallery"></div>
+  </section>
+
+  <footer>Made with ❤️ and questionable photos</footer>
+</main>
+<div id="lightbox"><img alt=""></div>
+
+<script src="data.js"></script>
+<script src="photos.js"></script>
+<script>
+  const SANTA = window.SANTA;
+  const $ = (id) => document.getElementById(id);
+
+  // ---- Reveal ----
+  // Must match normalize() in generate.mjs.
+  const normalize = (code) => code.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const fromB64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+
+  async function decrypt(entry, code) {
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(normalize(code)), 'PBKDF2', false, ['deriveKey']);
+    const key = await crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt: fromB64(entry.salt), iterations: SANTA.iterations, hash: 'SHA-256' },
+      base,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['decrypt'],
+    );
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: fromB64(entry.iv) }, key, fromB64(entry.ct));
+    return new TextDecoder().decode(plain);
+  }
+
+  const who = $('who');
+  if (!SANTA) {
+    $('error').textContent = 'No draw yet: run "node generate.mjs" first.';
+    $('reveal-btn').disabled = true;
+  } else {
+    who.add(new Option('Pick your name', '', true, true));
+    who.options[0].disabled = true;
+    for (const name of Object.keys(SANTA.entries)) who.add(new Option(name));
+  }
+
+  $('reveal-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = $('reveal-btn');
+    $('error').textContent = '';
+    btn.disabled = true;
+    btn.textContent = 'Asking the elves…';
+    try {
+      const name = await decrypt(SANTA.entries[who.value], $('code').value);
+      $('recipient').textContent = name;
+      const photo = $('recipient-photo');
+      photo.hidden = true;
+      photo.onload = () => { photo.hidden = false; };
+      photo.src = `images/people/${encodeURIComponent(name)}.jpg`;
+      $('reveal-form').hidden = true;
+      $('result').hidden = false;
+      $('result').classList.add('pop');
+      burst();
+    } catch {
+      $('error').textContent = 'Nope, that code is not right. 🎅 is watching.';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Reveal 🎁';
+    }
+  });
+
+  $('hide-btn').addEventListener('click', () => {
+    $('result').hidden = true;
+    $('result').classList.remove('pop');
+    $('recipient').textContent = '';
+    $('code').value = '';
+    $('reveal-form').hidden = false;
+  });
+
+  // ---- Gallery ----
+  const photos = window.PHOTOS || [];
+  if (photos.length) {
+    const gallery = $('gallery');
+    for (const src of photos) {
+      const img = document.createElement('img');
+      img.src = src;
+      img.loading = 'lazy';
+      img.alt = '';
+      gallery.appendChild(img);
+    }
+    $('gallery-section').hidden = false;
+  }
+  const lightbox = $('lightbox');
+  $('gallery').addEventListener('click', (e) => {
+    if (e.target.tagName !== 'IMG') return;
+    lightbox.querySelector('img').src = e.target.src;
+    lightbox.classList.add('open');
+  });
+  lightbox.addEventListener('click', () => lightbox.classList.remove('open'));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') lightbox.classList.remove('open'); });
+
+  // ---- Countdown to Christmas Eve, 18:00 ----
+  function tick() {
+    const now = new Date();
+    let target = new Date(now.getFullYear(), 11, 24, 18);
+    if (now > new Date(now.getFullYear(), 11, 27)) target = new Date(now.getFullYear() + 1, 11, 24, 18);
+    const ms = Math.max(0, target - now);
+    const parts = [
+      [Math.floor(ms / 864e5), 'days'],
+      [Math.floor(ms / 36e5) % 24, 'hours'],
+      [Math.floor(ms / 6e4) % 60, 'min'],
+      [Math.floor(ms / 1e3) % 60, 'sec'],
+    ];
+    $('countdown').innerHTML = parts.map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join('');
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  // ---- Snow (plus a burst on reveal) ----
+  const canvas = $('snow');
+  const ctx = canvas.getContext('2d');
+  let flakes = [];
+  function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
+  const flake = (y) => ({ x: Math.random() * canvas.width, y, r: 1 + Math.random() * 3, s: .4 + Math.random() * 1.2, d: Math.random() * 2 * Math.PI });
+  resize();
+  addEventListener('resize', resize);
+  for (let i = 0; i < 90; i++) flakes.push(flake(Math.random() * canvas.height));
+  function burst() { for (let i = 0; i < 150; i++) flakes.push({ ...flake(-Math.random() * 200), s: 1.5 + Math.random() * 2, temp: true }); }
+  (function frame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'rgba(255,255,255,.85)';
+    for (const f of flakes) {
+      f.y += f.s; f.d += .01; f.x += Math.sin(f.d) * .5;
+      if (f.y > canvas.height + 5 && !f.temp) Object.assign(f, flake(-5));
+      ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, 2 * Math.PI); ctx.fill();
+    }
+    flakes = flakes.filter((f) => !f.temp || f.y < canvas.height + 5);
+    requestAnimationFrame(frame);
+  })();
+</script>
+</body>
+</html>

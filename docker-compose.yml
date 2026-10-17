@@ -1,0 +1,11 @@
+services:
+  santa:
+    image: caddy:2.8.4-alpine
+    container_name: secret-santa
+    restart: unless-stopped
+    ports:
+      - "8088:80"
+    env_file: .env
+    volumes:
+      - ./:/srv:ro
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro

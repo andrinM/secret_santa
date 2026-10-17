@@ -1,0 +1,6 @@
+# Private stuff: never push to GitHub
+images/
+codes.txt
+data.js
+photos.js
+.env

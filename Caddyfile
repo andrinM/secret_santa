@@ -1,0 +1,26 @@
+# Runs inside the container. HTTPS is handled by the DSM reverse proxy in front,
+# so Caddy only serves plain HTTP. Login comes from .env (see .env.example).
+{
+	auto_https off
+	admin off
+}
+
+:80 {
+	root * /srv
+
+	basic_auth {
+		{$SANTA_USER} {$SANTA_HASH}
+	}
+
+	header {
+		X-Robots-Tag "noindex, nofollow, noarchive, noimageindex"
+		Referrer-Policy no-referrer
+		Cache-Control "private, no-store"
+	}
+
+	# The whole repo folder is mounted, so hide everything that isn't the site.
+	@private path /.git /.git/* /.env /.env.example /.gitignore /codes.txt /generate.mjs /Caddyfile /docker-compose.yml /README.md
+	respond @private 404
+
+	file_server
+}
