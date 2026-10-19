@@ -20,11 +20,12 @@ with that code, so nobody can see someone else's result.
 node generate.mjs
 ```
 
-This writes `data.js` and `photos.js` and prints one code per person. Send each person
-only their own code (WhatsApp, Signal, etc.). Running it again only refreshes the photo list.
-`--force` makes a brand-new draw, and every old code stops working.
+This writes `data/people.json` (what the server needs), `photos.js`, plus `data.js` and `codes.txt`
+(local only) and prints one code per person. Send each person only their own code (WhatsApp, Signal,
+etc.). Running it again only refreshes the photo list and `people.json`. `--force` makes a brand-new
+draw, and every old code stops working.
 
-Test locally by opening `index.html` in a browser.
+The page needs the server, so test it with `docker compose up -d` and http://localhost:8088.
 
 ## 3. Deploy (Synology, Container Manager)
 
@@ -57,8 +58,8 @@ Everything happens in the DSM web UI, no SSH needed. The repo must be public on 
 3. On the laptop, create `.env`: copy `.env.example`, then paste the output of
    `docker run --rm caddy:2.8.4-alpine caddy hash-password --plaintext 'your-family-password'`
    into `SANTA_HASH`, keeping the single quotes.
-4. File Station: upload `.env`, `images/`, `data.js` and `photos.js` from your laptop into
-   `docker/secret_santa/`. **Never upload `codes.txt`.**
+4. File Station: upload `.env`, `images/` and `photos.js` from your laptop into
+   `docker/secret_santa/`, and `people.json` into `docker/secret_santa/data/`. **Never upload `codes.txt`.**
 5. Container Manager → Project → Create: path `/docker/secret_santa`, use the existing
    `docker-compose.yml`, then start it.
 6. Control Panel → Login Portal → Advanced → Reverse Proxy → Create:
@@ -76,8 +77,13 @@ Everything happens in the DSM web UI, no SSH needed. The repo must be public on 
 
 ## Wishes
 
-After the reveal, everyone can write a wish until `WISH_DEADLINE` (in `.env`, default 1 December,
-00:00 Swiss time). From then on the box is locked and each person sees the wish of the person they drew.
+The site has two phases, switched by `WISH_DEADLINE` (in `.env`, default 1 December, 00:00 Swiss time):
+
+- **Before the deadline:** logging in (name + code) opens the wish page. Everyone writes and edits
+  their own wish. Nothing about the draw is shown.
+- **From the deadline:** the same login starts the picture reveal, then shows who you drew and their wish.
+
+The draw only leaves the server after the deadline (`data.js` is not served), so nobody can peek early.
 
 - A small Node server (`server.mjs`, second container `secret-santa-api`) stores the wishes in
   `data/wishes.json`. Caddy forwards `/api/*` to it, behind the same family login.

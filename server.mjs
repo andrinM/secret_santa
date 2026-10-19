@@ -1,6 +1,8 @@
 // Tiny wish API, no dependencies. Caddy forwards /api/* here (after the family login).
-//   POST /api/me    {name, code}        -> own wish, plus the drawn person's wish after the deadline
+//   GET  /api/names                     -> names for the login dropdown, deadline, open
+//   POST /api/me    {name, code}        -> own wish; after the deadline also who you drew and their wish
 //   POST /api/wish  {name, code, wish}  -> save own wish (only before the deadline)
+// Until the deadline the draw never leaves the server, so nobody can peek early.
 // /data/people.json comes from generate.mjs; /data/wishes.json is written here.
 import { createServer } from 'node:http';
 import { existsSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
@@ -48,6 +50,9 @@ async function readBody(req) {
 
 createServer(async (req, res) => {
   try {
+    if (req.method === 'GET' && req.url === '/api/names') {
+      return send(res, 200, { names: Object.keys(readJson(PEOPLE)), deadline: DEADLINE.toISOString(), open: Date.now() < DEADLINE });
+    }
     if (req.method !== 'POST' || !['/api/me', '/api/wish'].includes(req.url)) return send(res, 404, { error: 'not found' });
     const body = await readBody(req);
     const person = verify(body.name, body.code);
@@ -66,6 +71,7 @@ createServer(async (req, res) => {
       deadline: DEADLINE.toISOString(),
       open,
       wish: wishes[body.name] || '',
+      recipient: open ? null : person.recipient,
       recipientWish: open ? null : wishes[person.recipient] || '',
     });
   } catch (err) {

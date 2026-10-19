@@ -19,7 +19,7 @@
 	}
 
 	# The whole repo folder is mounted, so hide everything that isn't the site.
-	@private path /.git /.git/* /.env /.env.example /.gitignore /codes.txt /generate.mjs /server.mjs /data /data/* /Caddyfile /docker-compose.yml /README.md
+	@private path /.git /.git/* /.env /.env.example /.gitignore /codes.txt /data.js /generate.mjs /server.mjs /data /data/* /Caddyfile /docker-compose.yml /README.md
 	respond @private 404
 
 	reverse_proxy /api/* api:3000

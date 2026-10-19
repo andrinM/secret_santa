@@ -1,477 +1,858 @@
 <!doctype html>
 <html lang="de">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
-<meta name="referrer" content="no-referrer">
-<title>Wichteln 2026</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='46' fill='%23c8102e'/><circle cx='50' cy='50' r='20' fill='%23e8b84a'/></svg>">
-<style>
-  :root {
-    --bg: #0f1f17; --bg-glow: #23472f;
-    --card: #fffaf2; --ink: #2b1a12; --muted: #6b5b50; --line: #e3d6c6;
-    --red: #c8102e; --red-dark: #9b0c23; --gold: #e8b84a; --text: #f5efe6;
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; }
-  body {
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    background: radial-gradient(1200px 600px at 50% -10%, var(--bg-glow), var(--bg)) fixed, var(--bg);
-    color: var(--text); min-height: 100vh; overflow-x: hidden;
-  }
-  #snow { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
-  main { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 48px 16px 80px; }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
+  <meta name="referrer" content="no-referrer">
+  <title>Wichteln 2026</title>
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='46' fill='%23c8102e'/><circle cx='50' cy='50' r='20' fill='%23e8b84a'/></svg>">
+  <style>
+    :root {
+      --bg: #0f1f17;
+      --bg-glow: #23472f;
+      --card: #fffaf2;
+      --ink: #2b1a12;
+      --muted: #6b5b50;
+      --line: #e3d6c6;
+      --red: #c8102e;
+      --red-dark: #9b0c23;
+      --gold: #e8b84a;
+      --text: #f5efe6;
+    }
 
-  header { text-align: center; }
-  h1, h2, .recipient { font-family: Georgia, "Times New Roman", serif; }
-  h1 {
-    font-size: clamp(2.4rem, 8vw, 4.4rem); margin: .1em 0; color: var(--gold);
-    text-shadow: 0 2px 0 #7a5a12, 0 8px 24px rgba(0,0,0,.4);
-  }
-  .sub { opacity: .85; font-size: 1.1rem; margin: 0; }
-  .countdown { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 24px; }
-  .countdown div {
-    background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15);
-    border-radius: 12px; padding: 10px 12px; min-width: 72px;
-  }
-  .countdown b { display: block; font-size: 1.6rem; font-variant-numeric: tabular-nums; }
-  .countdown span { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; opacity: .7; }
+    * {
+      box-sizing: border-box;
+    }
 
-  section { margin-top: 64px; }
-  h2 { text-align: center; font-size: 1.9rem; margin: 0 0 20px; }
+    html,
+    body {
+      margin: 0;
+    }
 
-  .card {
-    background: var(--card); color: var(--ink); border-radius: 20px; padding: 28px;
-    box-shadow: 0 20px 50px rgba(0,0,0,.35); max-width: 460px; margin: 0 auto;
-    border-top: 6px solid var(--red);
-  }
-  label { display: block; font-weight: 600; margin: 14px 0 6px; }
-  select, input {
-    width: 100%; font: inherit; padding: 12px 14px; border: 2px solid var(--line);
-    border-radius: 12px; background: #fff; color: var(--ink);
-  }
-  input { text-transform: uppercase; letter-spacing: .15em; font-family: ui-monospace, Consolas, monospace; }
-  select:focus, input:focus { outline: none; border-color: var(--gold); }
-  button {
-    margin-top: 20px; width: 100%; font: inherit; font-weight: 700; font-size: 1.05rem;
-    padding: 14px; border: 0; border-radius: 12px; background: var(--red); color: #fff; cursor: pointer;
-  }
-  button:hover { background: var(--red-dark); }
-  button:disabled { opacity: .6; cursor: wait; }
-  .error { color: var(--red); min-height: 1.4em; margin: 10px 0 0; font-weight: 600; }
-  .hint { font-size: .9rem; color: var(--muted); margin: 14px 0 0; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(1200px 600px at 50% -10%, var(--bg-glow), var(--bg)) fixed, var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-  /* ---- Picker: one picture at a time ---- */
-  .picker-title { text-align: center; color: var(--muted); margin: 0 0 14px; }
-  .stage {
-    width: 100%; max-width: 340px; aspect-ratio: 1; margin: 0 auto; border-radius: 18px; overflow: hidden;
-    border: 5px solid var(--gold); background: #f3e9dc; box-shadow: 0 10px 24px rgba(0,0,0,.2);
-  }
-  .stage img, .stage .ph { display: block; width: 100%; height: 100%; object-fit: cover; }
-  .stage .ph {
-    display: flex; align-items: center; justify-content: center; font-size: 6rem;
-    font-family: Georgia, "Times New Roman", serif; color: var(--red);
-  }
-  .stage.show { animation: show-in var(--pop, 400ms) cubic-bezier(.22, 1, .36, 1); }
-  @keyframes show-in { from { transform: scale(.75); opacity: .3; } to { transform: scale(1); opacity: 1; } }
-  .stage.winner { border-color: var(--red); animation: glow .9s ease-in-out infinite alternate; }
-  @keyframes glow { to { box-shadow: 0 0 0 10px rgba(200,16,46,.25), 0 10px 24px rgba(0,0,0,.2); } }
+    #snow {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-  .result { text-align: center; margin-top: 18px; }
-  .result p { margin: 0; color: var(--muted); }
-  .recipient { font-size: 2.6rem; color: var(--red); margin: .1em 0; }
-  .wishes { text-align: left; margin-top: 24px; padding-top: 20px; border-top: 2px dashed var(--line); }
-  .wishes label { margin-top: 0; }
-  textarea {
-    width: 100%; font: inherit; padding: 12px 14px; border: 2px solid var(--line); border-radius: 12px;
-    background: #fff; color: var(--ink); resize: vertical;
-  }
-  textarea:focus { outline: none; border-color: var(--gold); }
-  textarea[readonly] { background: #f7f1e8; }
-  .their-wish { background: #fff; border-left: 5px solid var(--red); border-radius: 10px; padding: 14px 16px; margin: 0 0 20px; }
-  .their-wish b { display: block; margin-bottom: 6px; }
-  .their-wish p { margin: 0; color: var(--ink); white-space: pre-wrap; }
-  .link { background: none; color: var(--muted); text-decoration: underline; width: auto; padding: 0; font-weight: 400; font-size: .9rem; margin-top: 14px; }
-  .link:hover { background: none; color: var(--ink); }
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 48px 16px 80px;
+    }
 
-  .rules ul { max-width: 520px; margin: 0 auto; padding-left: 1.2em; line-height: 1.9; font-size: 1.05rem; }
+    header {
+      text-align: center;
+    }
+
+    h1,
+    h2,
+    .recipient {
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 8vw, 4.4rem);
+      margin: .1em 0;
+      color: var(--gold);
+      text-shadow: 0 2px 0 #7a5a12, 0 8px 24px rgba(0, 0, 0, .4);
+    }
+
+    .sub {
+      opacity: .85;
+      font-size: 1.1rem;
+      margin: 0;
+    }
+
+    .countdown {
+      display: inline-flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .countdown div {
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .15);
+      border-radius: 12px;
+      padding: 10px 12px;
+      min-width: 72px;
+    }
+
+    .countdown b {
+      display: block;
+      font-size: 1.6rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .countdown span {
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      opacity: .7;
+    }
+
+    section {
+      margin-top: 64px;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 1.9rem;
+      margin: 0 0 20px;
+    }
+
+    .card {
+      background: var(--card);
+      color: var(--ink);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, .35);
+      max-width: 460px;
+      margin: 0 auto;
+      border-top: 6px solid var(--red);
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin: 14px 0 6px;
+    }
+
+    select,
+    input {
+      width: 100%;
+      font: inherit;
+      padding: 12px 14px;
+      border: 2px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    input {
+      text-transform: uppercase;
+      letter-spacing: .15em;
+      font-family: ui-monospace, Consolas, monospace;
+    }
+
+    select:focus,
+    input:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      font: inherit;
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding: 14px;
+      border: 0;
+      border-radius: 12px;
+      background: var(--red);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: var(--red-dark);
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    .error {
+      color: var(--red);
+      min-height: 1.4em;
+      margin: 10px 0 0;
+      font-weight: 600;
+    }
+
+    .hint {
+      font-size: .9rem;
+      color: var(--muted);
+      margin: 14px 0 0;
+    }
+
+    /* ---- Picker: one picture at a time ---- */
+    .picker-title {
+      text-align: center;
+      color: var(--muted);
+      margin: 0 0 14px;
+    }
+
+    .stage {
+      width: 100%;
+      max-width: 340px;
+      aspect-ratio: 1;
+      margin: 0 auto;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 5px solid var(--gold);
+      background: #f3e9dc;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, .2);
+    }
+
+    .stage img,
+    .stage .ph {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .stage .ph {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 6rem;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--red);
+    }
+
+    .stage.show {
+      animation: show-in var(--pop, 400ms) cubic-bezier(.22, 1, .36, 1);
+    }
+
+    @keyframes show-in {
+      from {
+        transform: scale(.75);
+        opacity: .3;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .stage.winner {
+      border-color: var(--red);
+      animation: glow .9s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      to {
+        box-shadow: 0 0 0 10px rgba(200, 16, 46, .25), 0 10px 24px rgba(0, 0, 0, .2);
+      }
+    }
+
+    .result {
+      text-align: center;
+      margin-top: 18px;
+    }
+
+    .result p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .recipient {
+      font-size: 2.6rem;
+      color: var(--red);
+      margin: .1em 0;
+    }
+
+    .greeting {
+      font-weight: 700;
+      font-size: 1.15rem;
+      margin: 0 0 14px;
+    }
+
+    #wish-page label {
+      margin-top: 0;
+    }
+
+    textarea {
+      width: 100%;
+      font: inherit;
+      padding: 12px 14px;
+      border: 2px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--ink);
+      resize: vertical;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+
+    textarea[readonly] {
+      background: #f7f1e8;
+    }
+
+    .their-wish {
+      text-align: left;
+      background: #fff;
+      border-left: 5px solid var(--red);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin: 20px 0 0;
+    }
+
+    .their-wish b {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .their-wish p {
+      margin: 0;
+      color: var(--ink);
+      white-space: pre-wrap;
+    }
+
+    .link {
+      background: none;
+      color: var(--muted);
+      text-decoration: underline;
+      width: auto;
+      padding: 0;
+      font-weight: 400;
+      font-size: .9rem;
+      margin-top: 14px;
+    }
+
+    .link:hover {
+      background: none;
+      color: var(--ink);
+    }
+
+    .rules ul {
+      max-width: 520px;
+      margin: 0 auto;
+      padding-left: 1.2em;
+      line-height: 1.9;
+      font-size: 1.05rem;
+    }
 
 
-  @keyframes pop { 0% { transform: scale(.7); opacity: 0; } 70% { transform: scale(1.05); } 100% { transform: scale(1); opacity: 1; } }
-  .pop { animation: pop .5s ease-out; }
-  .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
-  .gallery img {
-    display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px;
-    cursor: zoom-in; box-shadow: 0 6px 18px rgba(0,0,0,.35);
-  }
-  #lightbox {
-    position: fixed; inset: 0; background: rgba(0,0,0,.9); display: none;
-    align-items: center; justify-content: center; z-index: 10; cursor: zoom-out; padding: 16px;
-  }
-  #lightbox.open { display: flex; }
-  #lightbox img { max-width: 100%; max-height: 100%; border-radius: 8px; }
+    @keyframes pop {
+      0% {
+        transform: scale(.7);
+        opacity: 0;
+      }
 
-  @media (prefers-reduced-motion: reduce) { #snow { display: none; } .pop { animation: none; } }
+      70% {
+        transform: scale(1.05);
+      }
 
-  /* Phones: tighter spacing */
-  @media (max-width: 600px) {
-    main { padding: 24px 16px 40px; }
-    h1 { margin: 0; }
-    .countdown { margin-top: 14px; gap: 8px; }
-    .countdown div { padding: 6px 8px; min-width: 60px; }
-    .countdown b { font-size: 1.3rem; }
-    section { margin-top: 32px; }
-    h2 { font-size: 1.6rem; margin-bottom: 12px; }
-    .card { padding: 18px; }
-    label { margin: 10px 0 4px; }
-    select, input, textarea { padding: 10px 12px; }
-    button { margin-top: 14px; padding: 12px; }
-    .hint { margin-top: 10px; }
-    .picker-title { margin-bottom: 10px; }
-    .result { margin-top: 12px; }
-    .recipient { font-size: 2.2rem; }
-    .wishes { margin-top: 16px; padding-top: 14px; }
-    .rules ul { line-height: 1.6; }
-  }
-</style>
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .pop {
+      animation: pop .5s ease-out;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+    }
+
+    .gallery img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 10px;
+      cursor: zoom-in;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, .35);
+    }
+
+    #lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      cursor: zoom-out;
+      padding: 16px;
+    }
+
+    #lightbox.open {
+      display: flex;
+    }
+
+    #lightbox img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 8px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #snow {
+        display: none;
+      }
+
+      .pop {
+        animation: none;
+      }
+    }
+
+    /* Phones: tighter spacing */
+    @media (max-width: 600px) {
+      main {
+        padding: 24px 16px 40px;
+      }
+
+      h1 {
+        margin: 0;
+      }
+
+      .countdown {
+        margin-top: 14px;
+        gap: 8px;
+      }
+
+      .countdown div {
+        padding: 6px 8px;
+        min-width: 60px;
+      }
+
+      .countdown b {
+        font-size: 1.3rem;
+      }
+
+      section {
+        margin-top: 32px;
+      }
+
+      h2 {
+        font-size: 1.6rem;
+        margin-bottom: 12px;
+      }
+
+      .card {
+        padding: 18px;
+      }
+
+      label {
+        margin: 10px 0 4px;
+      }
+
+      select,
+      input,
+      textarea {
+        padding: 10px 12px;
+      }
+
+      button {
+        margin-top: 14px;
+        padding: 12px;
+      }
+
+      .hint {
+        margin-top: 10px;
+      }
+
+      .picker-title {
+        margin-bottom: 10px;
+      }
+
+      .result {
+        margin-top: 12px;
+      }
+
+      .recipient {
+        font-size: 2.2rem;
+      }
+
+      .rules ul {
+        line-height: 1.6;
+      }
+    }
+  </style>
 </head>
-<body>
-<canvas id="snow"></canvas>
-<main>
-  <header>
-    <h1>Wichteln 2026</h1>
-    <p class="sub">Fünf von uns. Ein Geschenk pro Person. Null Spoiler.</p>
-    <div class="countdown" id="countdown" aria-label="Countdown bis Heiligabend"></div>
-  </header>
 
-  <section>
-    <h2>Für wen wichtelst du?</h2>
-    <div class="card">
-      <form id="reveal-form">
-        <label for="who">Ich bin…</label>
-        <select id="who" required></select>
-        <label for="code">Mein Geheimcode</label>
-        <input id="code" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX" required>
-        <button type="submit" id="reveal-btn">Aufdecken</button>
-        <p class="error" id="error" role="alert"></p>
-        <p class="hint">Schau, dass dir niemand über die Schulter schaut!</p>
-      </form>
-      <div id="picker" hidden>
-        <p class="picker-title" id="picker-title"></p>
-        <div class="stage" id="stage"></div>
-        <div class="result" id="result" hidden>
-          <p>Ho ho ho! Du bist Wichtel für…</p>
-          <div class="recipient" id="recipient"></div>
-          <p>Psst, nichts verraten!</p>
-          <div class="wishes" id="wishes" hidden>
-            <div id="their-wish"></div>
-            <label for="wish">Dein Wunsch</label>
-            <textarea id="wish" rows="4" maxlength="1000" placeholder="Was wünschst du dir? Ideen, Grössen, Farben…"></textarea>
-            <p class="hint" id="wish-info"></p>
-            <button type="button" id="wish-save">Wunsch speichern</button>
-            <p class="hint" id="wish-status" role="status"></p>
+<body>
+  <canvas id="snow"></canvas>
+  <main>
+    <header>
+      <h1>Wichteln 2026</h1>
+      <p class="sub">Fünf von uns. Ein Geschenk pro Person. Null Spoiler.</p>
+      <div class="countdown" id="countdown" aria-label="Countdown bis Heiligabend"></div>
+    </header>
+
+    <section>
+      <h2 id="phase-title">&nbsp;</h2>
+      <div class="card">
+        <form id="login-form">
+          <label for="who">Ich bin…</label>
+          <select id="who" required></select>
+          <label for="code">Mein Geheimcode</label>
+          <input id="code" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX"
+            required>
+          <button type="submit" id="login-btn">Weiter</button>
+          <p class="error" id="error" role="alert"></p>
+          <p class="hint">Schau, dass dir niemand über die Schulter schaut!</p>
+        </form>
+
+        <div id="wish-page" hidden>
+          <p class="greeting" id="greeting"></p>
+          <label for="wish">Dein Wunsch</label>
+          <textarea id="wish" rows="5" maxlength="1000"
+            placeholder="Was wünschst du dir? Ideen, Grössen, Farben…"></textarea>
+          <button type="button" id="wish-save">Wunsch speichern</button>
+          <p class="hint" id="wish-status" role="status"></p>
+          <p class="hint" id="wish-info"></p>
+          <button type="button" class="link logout">Abmelden</button>
+        </div>
+
+        <div id="picker" hidden>
+          <p class="picker-title" id="picker-title"></p>
+          <div class="stage" id="stage"></div>
+          <div class="result" id="result" hidden>
+            <p>Ho ho ho! Du bist Wichtel für…</p>
+            <div class="recipient" id="recipient"></div>
+            <p>Psst, nichts verraten!</p>
+            <div class="their-wish" id="their-wish"></div>
+            <button type="button" class="link logout">Wieder verstecken</button>
           </div>
-          <button type="button" class="link" id="hide-btn">Wieder verstecken</button>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="rules">
-    <h2>Die Regeln</h2>
-    <ul>
-      <li>Budget: ca. <b>CHF 50</b></li>
-      <li>Bescherung am <b>24. Dezember</b></li>
-      <li>Verrate niemandem, wen du hast. Nicht einmal dem Hund.</li>
-      <li>Die Verpackung zählt. Es wird bewertet.</li>
-    </ul>
-  </section>
+    <section class="rules">
+      <h2>Die Regeln</h2>
+      <ul>
+        <li>Budget: ca. <b>CHF 50</b></li>
+        <li>Bescherung am <b>24. Dezember</b></li>
+      </ul>
+    </section>
 
-  <section id="gallery-section" hidden>
-    <div class="gallery" id="gallery"></div>
-  </section>
+    <section id="gallery-section" hidden>
+      <div class="gallery" id="gallery"></div>
+    </section>
 
-</main>
-<div id="lightbox"><img alt=""></div>
+  </main>
+  <div id="lightbox"><img alt=""></div>
 
-<script src="data.js"></script>
-<script src="photos.js"></script>
-<script>
-  const SANTA = window.SANTA;
-  const $ = (id) => document.getElementById(id);
+  <script src="photos.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    const formatDay = (iso) => new Date(iso).toLocaleDateString('de-CH', { day: 'numeric', month: 'long' });
 
-  // ---- Decrypt ----
-  // Must match normalize() in generate.mjs.
-  const normalize = (code) => code.toUpperCase().replace(/[^A-Z0-9]/g, '');
-  const fromB64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
-
-  async function decrypt(entry, code) {
-    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(normalize(code)), 'PBKDF2', false, ['deriveKey']);
-    const key = await crypto.subtle.deriveKey(
-      { name: 'PBKDF2', salt: fromB64(entry.salt), iterations: SANTA.iterations, hash: 'SHA-256' },
-      base,
-      { name: 'AES-GCM', length: 256 },
-      false,
-      ['decrypt'],
-    );
-    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: fromB64(entry.iv) }, key, fromB64(entry.ct));
-    return new TextDecoder().decode(plain);
-  }
-
-  // ---- Portraits: images/people/<Name>.<jpg|jpeg|png|webp>, or null ----
-  const portraits = {};
-  function findPortrait(name) {
-    if (!portraits[name]) {
-      portraits[name] = new Promise((resolve) => {
-        const urls = ['jpg', 'jpeg', 'png', 'webp'].map((ext) => `images/people/${encodeURIComponent(name)}.${ext}`);
-        const img = new Image();
-        img.onload = () => resolve(img.src);
-        img.onerror = () => { if (urls.length) img.src = urls.shift(); else resolve(null); };
-        img.src = urls.shift();
+    // ---- Server (server.mjs behind /api) ----
+    async function api(path, body) {
+      const res = await fetch(path, body === undefined ? {} : {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
       });
+      if (!res.ok) throw Object.assign(new Error(`${path}: ${res.status}`), { status: res.status });
+      return res.json();
     }
-    return portraits[name];
-  }
 
-  const who = $('who');
-  if (!SANTA) {
-    $('error').textContent = 'Noch keine Auslosung: zuerst "node generate.mjs" ausführen.';
-    $('reveal-btn').disabled = true;
-  } else {
-    who.add(new Option('Name wählen', '', true, true));
-    who.options[0].disabled = true;
-    for (const name of Object.keys(SANTA.entries)) {
-      who.add(new Option(name));
-      findPortrait(name); // preload
+    // ---- Portraits: images/people/<Name>.<jpg|jpeg|png|webp>, or null ----
+    const portraits = {};
+    function findPortrait(name) {
+      if (!portraits[name]) {
+        portraits[name] = new Promise((resolve) => {
+          const urls = ['jpg', 'jpeg', 'png', 'webp'].map((ext) => `images/people/${encodeURIComponent(name)}.${ext}`);
+          const img = new Image();
+          img.onload = () => resolve(img.src);
+          img.onerror = () => { if (urls.length) img.src = urls.shift(); else resolve(null); };
+          img.src = urls.shift();
+        });
+      }
+      return portraits[name];
     }
-    for (const src of window.PHOTOS || []) new Image().src = src;
-  }
 
-  // ---- Picker: shows the pictures one by one, then faster, and stops on the drawn person ----
-  const stage = $('stage');
-  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-  let run = 0, drawn = null;
+    // ---- Phase: wish page until the deadline, draw page from then on ----
+    const who = $('who');
+    let names = [], login = null, drawn = null, run = 0;
 
-  const shuffle = (list) => {
-    for (let i = list.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [list[i], list[j]] = [list[j], list[i]];
+    function setPhase(open) {
+      $('phase-title').textContent = open ? 'Was wünschst du dir?' : 'Für wen wichtelst du?';
+      $('login-btn').textContent = open ? 'Anmelden' : 'Aufdecken';
     }
-    return list;
-  };
 
-  // Every portrait from images/people/ plus every photo from images/. The drawn person is always
-  // included (with their first letter if they have no portrait).
-  async function buildDeck(target) {
-    const names = Object.keys(SANTA.entries);
-    const pics = await Promise.all(names.map(findPortrait));
-    return names
-      .map((name, i) => ({ name, src: pics[i] }))
-      .filter((card) => card.src || card.name === target)
-      .concat((window.PHOTOS || []).map((src) => ({ src })));
-  }
+    (async function init() {
+      try {
+        const info = await api('/api/names');
+        names = info.names;
+        setPhase(info.open);
+        who.add(new Option('Name wählen', '', true, true));
+        who.options[0].disabled = true;
+        for (const name of names) who.add(new Option(name));
+        if (!info.open) {
+          names.forEach(findPortrait); // preload for the reveal
+          for (const src of window.PHOTOS || []) new Image().src = src;
+        }
+      } catch {
+        $('phase-title').textContent = 'Wichteln';
+        $('error').textContent = 'Der Server ist gerade nicht erreichbar. Versuch es später nochmals.';
+        $('login-btn').disabled = true;
+      }
+    })();
 
-  function show({ name, src }, pop) {
-    const pic = document.createElement(src ? 'img' : 'div');
-    if (src) { pic.src = src; pic.alt = ''; } else { pic.className = 'ph'; pic.textContent = name.charAt(0).toUpperCase(); }
-    stage.replaceChildren(pic);
-    stage.style.setProperty('--pop', `${pop}ms`);
-    stage.classList.remove('show');
-    void stage.offsetWidth; // restart the pop animation
-    stage.classList.add('show');
-  }
+    $('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = $('login-btn');
+      const label = btn.textContent;
+      $('error').textContent = '';
+      btn.disabled = true;
+      btn.textContent = 'Die Elfen suchen…';
+      let state;
+      try {
+        state = await api('/api/me', { name: who.value, code: $('code').value });
+      } catch (err) {
+        $('error').textContent = err.status === 401
+          ? 'Nope, dieser Code stimmt nicht. Der Weihnachtsmann schaut zu.'
+          : 'Der Server ist gerade nicht erreichbar. Versuch es später nochmals.';
+        return;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = label;
+      }
+      login = { name: who.value, code: $('code').value };
+      setPhase(state.open); // in case the deadline passed while the page was open
+      $('login-form').hidden = true;
+      if (state.open) showWishPage(state);
+      else reveal(state);
+    });
 
-  // ---- Wishes (server.mjs behind /api; hidden when there is no server, e.g. opened as a local file) ----
-  let login = null; // { name, code } of whoever is currently revealed
+    // ---- Wish page ----
+    function showWishPage(state) {
+      $('greeting').textContent = `Hallo ${login.name}!`;
+      $('wish').value = state.wish;
+      $('wish-status').textContent = '';
+      $('wish-info').textContent = `Am ${formatDay(state.deadline)} wird aufgedeckt: Dann erfährst du, für wen du wichtelst, `
+        + 'und dein Wichtel sieht deinen Wunsch. Bis dahin kannst du ihn jederzeit ändern.';
+      $('wish-page').hidden = false;
+    }
 
-  async function api(path, body) {
-    const res = await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    if (!res.ok) throw new Error(`${path}: ${res.status}`);
-    return res.json();
-  }
+    $('wish-save').addEventListener('click', async () => {
+      const btn = $('wish-save');
+      btn.disabled = true;
+      try {
+        const state = await api('/api/wish', { ...login, wish: $('wish').value });
+        $('wish').value = state.wish;
+        $('wish-status').textContent = 'Gespeichert!';
+      } catch (err) {
+        $('wish-status').textContent = err.status === 403
+          ? 'Die Wunschzeit ist vorbei. Lade die Seite neu, um aufzudecken.'
+          : 'Speichern hat nicht geklappt. Versuch es nochmals.';
+      } finally {
+        btn.disabled = false;
+      }
+    });
 
-  function showWishes(state) {
-    const day = new Date(state.deadline).toLocaleDateString('de-CH', { day: 'numeric', month: 'long' });
-    const box = $('their-wish');
-    box.innerHTML = '';
-    box.className = '';
-    if (!state.open) {
-      box.className = 'their-wish';
+    // ---- Reveal: shows the pictures one by one, then faster, and stops on the drawn person ----
+    const stage = $('stage');
+
+    const shuffle = (list) => {
+      for (let i = list.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [list[i], list[j]] = [list[j], list[i]];
+      }
+      return list;
+    };
+
+    // Every portrait from images/people/ plus every photo from images/. The drawn person is always
+    // included (with their first letter if they have no portrait).
+    async function buildDeck(target) {
+      const pics = await Promise.all(names.map(findPortrait));
+      return names
+        .map((name, i) => ({ name, src: pics[i] }))
+        .filter((card) => card.src || card.name === target)
+        .concat((window.PHOTOS || []).map((src) => ({ src })));
+    }
+
+    function show({ name, src }, pop) {
+      const pic = document.createElement(src ? 'img' : 'div');
+      if (src) { pic.src = src; pic.alt = ''; } else { pic.className = 'ph'; pic.textContent = name.charAt(0).toUpperCase(); }
+      stage.replaceChildren(pic);
+      stage.style.setProperty('--pop', `${pop}ms`);
+      stage.classList.remove('show');
+      void stage.offsetWidth; // restart the pop animation
+      stage.classList.add('show');
+    }
+
+    async function reveal(state) {
+      drawn = state.recipient;
+      $('result').hidden = true;
+      $('picker').hidden = false;
+      $('picker-title').textContent = 'Mal schauen, wen du gezogen hast…';
+      stage.className = 'stage';
+      stage.replaceChildren();
+      const deck = await buildDeck(drawn);
+      await sleep(300);
+      if (!(await pick(deck, drawn))) return;
+      await sleep(150); // let the last pop finish before the glow starts
+      stage.className = 'stage winner';
+      $('picker-title').textContent = 'Treffer!';
+      $('recipient').textContent = drawn;
       const title = document.createElement('b');
       title.textContent = `Der Wunsch von ${drawn}:`;
       const text = document.createElement('p');
       text.textContent = state.recipientWish || `${drawn} hat keinen Wunsch eingetragen. Viel Glück!`;
-      box.append(title, text);
+      $('their-wish').replaceChildren(title, text);
+      $('result').hidden = false;
+      $('result').classList.add('pop');
+      burst();
+      showGallery();
     }
-    $('wish').value = state.wish;
-    $('wish').readOnly = !state.open;
-    $('wish-save').hidden = !state.open;
-    $('wish-info').textContent = state.open
-      ? `Ab dem ${day} sieht dein Wichtel deinen Wunsch. Bis dahin kannst du ihn jederzeit ändern. Den Wunsch von ${drawn} siehst du ebenfalls ab dem ${day}.`
-      : `Seit dem ${day} sind die Wünsche fix.`;
-    $('wish-status').textContent = '';
-    $('wishes').hidden = false;
-  }
 
-  $('wish-save').addEventListener('click', async () => {
-    const btn = $('wish-save');
-    btn.disabled = true;
-    try {
-      showWishes(await api('/api/wish', { ...login, wish: $('wish').value }));
-      $('wish-status').textContent = 'Gespeichert!';
-    } catch {
-      $('wish-status').textContent = 'Speichern hat nicht geklappt. Versuch es nochmals.';
-    } finally {
-      btn.disabled = false;
+    for (const btn of document.querySelectorAll('.logout')) {
+      btn.addEventListener('click', () => {
+        run++; // cancels a running reveal
+        login = null;
+        drawn = null;
+        $('wish').value = '';
+        $('wish-page').hidden = true;
+        $('their-wish').replaceChildren();
+        stage.replaceChildren();
+        stage.className = 'stage';
+        $('recipient').textContent = '';
+        $('result').classList.remove('pop');
+        $('picker').hidden = true;
+        $('gallery-section').hidden = true;
+        $('code').value = '';
+        $('login-form').hidden = false;
+      });
     }
-  });
 
-  // ---- Photos below the rules, shown once the result is revealed ----
-  const lightbox = $('lightbox');
-  function showGallery() {
-    const gallery = $('gallery');
-    const photos = window.PHOTOS || [];
-    if (!photos.length) return;
-    if (!gallery.children.length) {
-      for (const src of photos) {
-        const img = document.createElement('img');
-        img.src = src;
-        img.alt = '';
-        img.loading = 'lazy';
-        gallery.appendChild(img);
+    // ---- Photos below the rules, shown once the result is revealed ----
+    const lightbox = $('lightbox');
+    function showGallery() {
+      const gallery = $('gallery');
+      const photos = window.PHOTOS || [];
+      if (!photos.length) return;
+      if (!gallery.children.length) {
+        for (const src of photos) {
+          const img = document.createElement('img');
+          img.src = src;
+          img.alt = '';
+          img.loading = 'lazy';
+          gallery.appendChild(img);
+        }
       }
+      $('gallery-section').hidden = false;
     }
-    $('gallery-section').hidden = false;
-  }
-  $('gallery').addEventListener('click', (e) => {
-    if (e.target.tagName !== 'IMG') return;
-    lightbox.querySelector('img').src = e.target.src;
-    lightbox.classList.add('open');
-  });
-  lightbox.addEventListener('click', () => lightbox.classList.remove('open'));
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') lightbox.classList.remove('open'); });
+    $('gallery').addEventListener('click', (e) => {
+      if (e.target.tagName !== 'IMG') return;
+      lightbox.querySelector('img').src = e.target.src;
+      lightbox.classList.add('open');
+    });
+    lightbox.addEventListener('click', () => lightbox.classList.remove('open'));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') lightbox.classList.remove('open'); });
 
-  // Resolves true when it landed on the drawn person, false if cancelled by "Wieder verstecken".
-  async function pick(deck, target) {
-    const id = ++run;
-    const winner = deck.find((card) => card.name === target);
-    const others = deck.filter((card) => card !== winner);
+    // Easter egg: near the end the reveal slows down and "lands" on this photo, pauses, then moves on
+    // to the real person. It is kept out of the normal rounds so it only shows up for the fake-out.
+    const EASTER_EGG = 'images/13612324_1134744929900739_4600087544698069944_n.jpg';
+    const FAKEOUT_CHANCE = 0.5; // for later reveals; the first reveal on a page visit always gets it
+    let reveals = 0;
+    new Image().src = EASTER_EGG; // preload
 
-    // 1. Every picture once, in random order, 0.5 s each.
-    const first = shuffle([...deck]);
-    for (const card of first) {
-      show(card, 400);
-      await sleep(500);
-      if (id !== run) return false;
+    // Resolves true when it landed on the drawn person, false if cancelled by "Wieder verstecken".
+    async function pick(fullDeck, target) {
+      const id = ++run;
+      const deck = fullDeck.filter((card) => card.src !== EASTER_EGG);
+      const winner = deck.find((card) => card.name === target);
+      const others = deck.filter((card) => card !== winner);
+      const fakeout = reveals++ === 0 || Math.random() < FAKEOUT_CHANCE;
+
+      // 1. Every picture once, in random order, 0.5 s each.
+      const first = shuffle([...deck]);
+      for (const card of first) {
+        show(card, 400);
+        await sleep(500);
+        if (id !== run) return false;
+      }
+
+      // 2. Again, faster, ending on the drawn person.
+      const second = shuffle([...others]);
+      if (second.length > 1 && second[0] === first[first.length - 1]) second.push(second.shift());
+      for (const card of second) {
+        show(card, 200);
+        await sleep(250);
+        if (id !== run) return false;
+      }
+
+      // 3. Fake-out: slow down, "land" on the easter egg, then jump on to the real person.
+      if (fakeout) {
+        for (const [i, wait] of [350, 550, 800].entries()) {
+          show(others[i % others.length] || winner, 300);
+          await sleep(wait);
+          if (id !== run) return false;
+        }
+        show({ src: EASTER_EGG }, 600);
+        $('picker-title').textContent = 'Treffer…?';
+        await sleep(2000);
+        if (id !== run) return false;
+        $('picker-title').textContent = 'Moment mal… nein, doch nicht!';
+        await sleep(900);
+        if (id !== run) return false;
+      }
+      show(winner, 600);
+      return true;
     }
 
-    // 2. Again, faster, ending on the drawn person.
-    const second = shuffle([...others]);
-    if (second.length > 1 && second[0] === first[first.length - 1]) second.push(second.shift());
-    for (const card of second) {
-      show(card, 200);
-      await sleep(250);
-      if (id !== run) return false;
+    // ---- Countdown to Christmas Eve, 18:00 ----
+    function tick() {
+      const now = new Date();
+      let target = new Date(now.getFullYear(), 11, 24, 18);
+      if (now > new Date(now.getFullYear(), 11, 27)) target = new Date(now.getFullYear() + 1, 11, 24, 18);
+      const ms = Math.max(0, target - now);
+      const parts = [
+        [Math.floor(ms / 864e5), 'Tage'],
+        [Math.floor(ms / 36e5) % 24, 'Std.'],
+        [Math.floor(ms / 6e4) % 60, 'Min.'],
+        [Math.floor(ms / 1e3) % 60, 'Sek.'],
+      ];
+      $('countdown').innerHTML = parts.map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join('');
     }
-    show(winner, 600);
-    return true;
-  }
+    tick();
+    setInterval(tick, 1000);
 
-  $('reveal-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = $('reveal-btn');
-    $('error').textContent = '';
-    btn.disabled = true;
-    btn.textContent = 'Die Elfen suchen…';
-    try {
-      drawn = await decrypt(SANTA.entries[who.value], $('code').value);
-    } catch {
-      $('error').textContent = 'Nope, dieser Code stimmt nicht. Der Weihnachtsmann schaut zu.';
-      return;
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Aufdecken';
-    }
-    login = { name: who.value, code: $('code').value };
-    const wishState = api('/api/me', login).catch(() => null); // load while the pictures run
-    $('reveal-form').hidden = true;
-    $('wishes').hidden = true;
-    $('result').hidden = true;
-    $('picker').hidden = false;
-    $('picker-title').textContent = 'Mal schauen, wen du gezogen hast…';
-    stage.className = 'stage';
-    stage.replaceChildren();
-    const deck = await buildDeck(drawn);
-    await sleep(300);
-    if (!(await pick(deck, drawn))) return;
-    await sleep(150); // let the last pop finish before the glow starts
-    stage.className = 'stage winner';
-    $('picker-title').textContent = 'Treffer!';
-    $('recipient').textContent = drawn;
-    $('result').hidden = false;
-    $('result').classList.add('pop');
-    burst();
-    showGallery();
-    const state = await wishState;
-    if (state && login) showWishes(state);
-  });
-
-  $('hide-btn').addEventListener('click', () => {
-    run++; // cancels a running pick
-    drawn = null;
-    login = null;
-    $('wishes').hidden = true;
-    $('wish').value = '';
-    $('their-wish').innerHTML = '';
-    stage.replaceChildren();
-    stage.className = 'stage';
-    $('recipient').textContent = '';
-    $('result').classList.remove('pop');
-    $('picker').hidden = true;
-    $('code').value = '';
-    $('reveal-form').hidden = false;
-    $('gallery-section').hidden = true;
-  });
-
-  // ---- Countdown to Christmas Eve, 18:00 ----
-  function tick() {
-    const now = new Date();
-    let target = new Date(now.getFullYear(), 11, 24, 18);
-    if (now > new Date(now.getFullYear(), 11, 27)) target = new Date(now.getFullYear() + 1, 11, 24, 18);
-    const ms = Math.max(0, target - now);
-    const parts = [
-      [Math.floor(ms / 864e5), 'Tage'],
-      [Math.floor(ms / 36e5) % 24, 'Std.'],
-      [Math.floor(ms / 6e4) % 60, 'Min.'],
-      [Math.floor(ms / 1e3) % 60, 'Sek.'],
-    ];
-    $('countdown').innerHTML = parts.map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join('');
-  }
-  tick();
-  setInterval(tick, 1000);
-
-  // ---- Snow (plus a burst on reveal) ----
-  const canvas = $('snow');
-  const ctx = canvas.getContext('2d');
-  let flakes = [];
-  function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
-  const flake = (y) => ({ x: Math.random() * canvas.width, y, r: 1 + Math.random() * 3, s: .4 + Math.random() * 1.2, d: Math.random() * 2 * Math.PI });
-  resize();
-  addEventListener('resize', resize);
-  for (let i = 0; i < 90; i++) flakes.push(flake(Math.random() * canvas.height));
-  function burst() { for (let i = 0; i < 150; i++) flakes.push({ ...flake(-Math.random() * 200), s: 1.5 + Math.random() * 2, temp: true }); }
-  (function frame() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'rgba(255,255,255,.85)';
-    for (const f of flakes) {
-      f.y += f.s; f.d += .01; f.x += Math.sin(f.d) * .5;
-      if (f.y > canvas.height + 5 && !f.temp) Object.assign(f, flake(-5));
-      ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, 2 * Math.PI); ctx.fill();
-    }
-    flakes = flakes.filter((f) => !f.temp || f.y < canvas.height + 5);
-    requestAnimationFrame(frame);
-  })();
-</script>
+    // ---- Snow (plus a burst on reveal) ----
+    const canvas = $('snow');
+    const ctx = canvas.getContext('2d');
+    let flakes = [];
+    function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
+    const flake = (y) => ({ x: Math.random() * canvas.width, y, r: 1 + Math.random() * 3, s: .4 + Math.random() * 1.2, d: Math.random() * 2 * Math.PI });
+    resize();
+    addEventListener('resize', resize);
+    for (let i = 0; i < 90; i++) flakes.push(flake(Math.random() * canvas.height));
+    function burst() { for (let i = 0; i < 150; i++) flakes.push({ ...flake(-Math.random() * 200), s: 1.5 + Math.random() * 2, temp: true }); }
+    (function frame() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = 'rgba(255,255,255,.85)';
+      for (const f of flakes) {
+        f.y += f.s; f.d += .01; f.x += Math.sin(f.d) * .5;
+        if (f.y > canvas.height + 5 && !f.temp) Object.assign(f, flake(-5));
+        ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, 2 * Math.PI); ctx.fill();
+      }
+      flakes = flakes.filter((f) => !f.temp || f.y < canvas.height + 5);
+      requestAnimationFrame(frame);
+    })();
+  </script>
 </body>
+
 </html>
