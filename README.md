@@ -7,8 +7,11 @@ with that code, so nobody can see someone else's result.
 ## 1. Set up
 
 1. Edit `FAMILY` (and optionally `EXCLUDE`) at the top of `generate.mjs`.
-2. Put photos in `images/`. Resize them first (~1600px wide), because phone photos are huge.
-   Optional: `images/people/<Name>.jpg` (exact name from `FAMILY`) is shown on the reveal.
+2. Photos for the reveal (resize them first, ~1000px is plenty). They are shown one at a time, first
+   0.5 s each, then a second, faster round that ends on the drawn person:
+   - `images/people/<Name>.jpg`: one portrait per person, named exactly like in `FAMILY`
+     (`.jpeg`, `.png` and `.webp` work too). The reveal always ends on the drawn person's portrait.
+   - `images/`: any extra photos, mixed in.
 3. Edit the rules (budget, date) in `index.html`.
 
 ## 2. Draw
@@ -71,10 +74,25 @@ Everything happens in the DSM web UI, no SSH needed. The repo must be public on 
 - New photos: put them in `images/` on the laptop, run `node generate.mjs` (only the photo list
   changes), then upload the new photos plus `photos.js`.
 
+## Wishes
+
+After the reveal, everyone can write a wish until `WISH_DEADLINE` (in `.env`, default 1 December,
+00:00 Swiss time). From then on the box is locked and each person sees the wish of the person they drew.
+
+- A small Node server (`server.mjs`, second container `secret-santa-api`) stores the wishes in
+  `data/wishes.json`. Caddy forwards `/api/*` to it, behind the same family login.
+- The server checks codes against `data/people.json`, which `node generate.mjs` writes (code hashes plus
+  who drew whom). Upload it to `docker/secret_santa/data/` on the NAS. **Never put it on GitHub.**
+- Re-running `node generate.mjs` without `--force` rebuilds `people.json` from `codes.txt` and `data.js`,
+  so codes already handed out keep working.
+- Changing the deadline: edit `WISH_DEADLINE` in `.env` on the NAS, then restart the project.
+- The wishes only work through the server. If you open `index.html` as a local file, the wish box doesn't appear.
+
 ## Privacy
 
 - The whole site, including photos, sits behind one shared username and password.
-- `images/`, `data.js`, `photos.js`, `codes.txt` and `.env` are git-ignored, so they never end up on GitHub.
-- The server returns 404 for repo files such as `.git/`, `.env`, `codes.txt` and `generate.mjs`.
+- `images/`, `data/`, `data.js`, `photos.js`, `codes.txt` and `.env` are git-ignored, so they never end up on GitHub.
+- The server returns 404 for repo files such as `.git/`, `.env`, `data/`, `codes.txt` and `generate.mjs`.
+- `data/people.json` contains who drew whom (in plain text), so you could look it up on the NAS. Like `codes.txt`, don't.
 - `noindex` headers and `robots.txt` keep search engines out.
 - As the organizer you have every code in `codes.txt`, so you *could* peek. Don't. 🙃

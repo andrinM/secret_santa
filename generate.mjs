@@ -1,12 +1,13 @@
 // Draws Secret Santa pairs and writes data.js with each result encrypted
-// under that person's personal code, plus photos.js listing images/.
-// Run: node generate.mjs          first run: draw + photos; later: photos only
+// under that person's personal code, plus photos.js listing images/ and
+// data/people.json (code hashes + who drew whom) for the wish server.
+// Run: node generate.mjs          first run: draw + photos; later: photos + people.json only
 //      node generate.mjs --force  new draw (old codes stop working)
-import { existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs';
-import { randomInt, randomBytes, webcrypto } from 'node:crypto';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { createHash, randomInt, randomBytes, webcrypto } from 'node:crypto';
 
 // ---- Edit these -----------------------------------------------------------
-const FAMILY = ['Person 1', 'Person 2', 'Person 3', 'Person 4', 'Person 5'];
+const FAMILY = ['Andrin', 'Bea', 'Julia', 'Peter', 'Tom'];
 // Pairs that must not draw each other (both directions), e.g. couples.
 const EXCLUDE = [
   // ['Mom', 'Dad'],
@@ -63,12 +64,41 @@ async function encrypt(text, code) {
   return { salt: b64(salt), iv: b64(iv), ct: b64(new Uint8Array(ct)) };
 }
 
+async function decrypt(entry, code, iterations) {
+  const { subtle } = webcrypto;
+  const salt = Buffer.from(entry.salt, 'base64');
+  const base = await subtle.importKey('raw', new TextEncoder().encode(normalize(code)), 'PBKDF2', false, ['deriveKey']);
+  const key = await subtle.deriveKey(
+    { name: 'PBKDF2', salt, iterations, hash: 'SHA-256' },
+    base,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['decrypt'],
+  );
+  const pt = await subtle.decrypt({ name: 'AES-GCM', iv: Buffer.from(entry.iv, 'base64') }, key, Buffer.from(entry.ct, 'base64'));
+  return new TextDecoder().decode(pt);
+}
+
+// Must match hash() in server.mjs.
+function writePeople(codes, pairs) {
+  const people = {};
+  for (const [name, code] of Object.entries(codes)) {
+    const salt = randomBytes(16).toString('hex');
+    const codeHash = createHash('sha256').update(salt + normalize(code)).digest('hex');
+    people[name] = { salt, codeHash, recipient: pairs[name] };
+  }
+  if (!existsSync('data')) mkdirSync('data');
+  writeFileSync('data/people.json', JSON.stringify(people, null, 2) + '\n');
+  console.log('data/people.json written (upload it to the NAS, never to GitHub).');
+}
+
 function listPhotos() {
   if (!existsSync('images')) mkdirSync('images');
   return readdirSync('images', { withFileTypes: true })
     .filter((f) => f.isFile() && /\.(jpe?g|png|webp|gif|avif)$/i.test(f.name))
-    .map((f) => `images/${f.name}`)
-    .sort();
+    .map((f) => f.name)
+    .sort()
+    .map((name) => `images/${encodeURIComponent(name)}`); // spaces etc. in WhatsApp file names
 }
 
 const photos = listPhotos();
@@ -77,6 +107,16 @@ console.log(`photos.js updated: ${photos.length} photo(s) found in images/.`);
 
 if (existsSync('data.js') && !process.argv.includes('--force')) {
   console.log('data.js already exists, keeping the current draw. Use --force for a new one.');
+  if (existsSync('codes.txt')) {
+    // Rebuild people.json from the existing draw so the codes already handed out keep working.
+    const data = JSON.parse(readFileSync('data.js', 'utf8').replace(/^window\.SANTA = /, '').replace(/;\s*$/, ''));
+    const codes = Object.fromEntries(
+      readFileSync('codes.txt', 'utf8').trim().split(/\r?\n/).map((line) => line.match(/^(.*?)\s+(\S+)$/).slice(1)),
+    );
+    const pairs = {};
+    for (const [name, code] of Object.entries(codes)) pairs[name] = await decrypt(data.entries[name], code, data.iterations);
+    writePeople(codes, pairs);
+  }
   process.exit(0);
 }
 
@@ -93,6 +133,7 @@ writeFileSync('data.js', `window.SANTA = ${JSON.stringify(data, null, 2)};\n`);
 
 const lines = FAMILY.map((name) => `${name.padEnd(16)} ${codes[name]}`);
 writeFileSync('codes.txt', lines.join('\n') + '\n');
+writePeople(codes, pairs);
 
 console.log('\nNew draw done.\n');
 console.log('Send each person ONLY their own code:\n');

@@ -9,3 +9,18 @@ services:
     volumes:
       - ./:/srv:ro
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      - api
+
+  # Wish API, only reachable through Caddy (no port published).
+  api:
+    image: node:22.11.0-alpine
+    container_name: secret-santa-api
+    restart: unless-stopped
+    command: node /app/server.mjs
+    env_file: .env
+    environment:
+      TZ: Europe/Zurich
+    volumes:
+      - ./server.mjs:/app/server.mjs:ro
+      - ./data:/data
